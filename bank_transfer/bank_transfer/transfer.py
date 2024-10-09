@@ -21,7 +21,7 @@ class Transfer(Document):
         doc=frappe.new_doc('Transfer')
         doc.payeeId=self.payeeId
         doc.bankAccountNumber=self.bankAccountNumber
-        doc.amount=sellf.amount
+        doc.amount=self.amount
         doc.customerRefId=self.customerRefId
         doc.purpose=self.purpose
         doc.transferType=self.transferType
@@ -53,26 +53,26 @@ class Transfer(Document):
                 frappe.throw("Limit exceeded")
 
 @frappe.whitelist(allow_guest=True)
-def create_transfer(self):
+def create_transfer():
     try:
-        json=frappe.request.get_json()
+        json_data=frappe.request.get_json()
     except Exception as e:
         frappe.throw("Inavlid json")
         
-    payeeId= json.get_data('payeeId') 
-    bankAccountNumber=json.get_data('bankAccountNumber')
-    amount=json.get_data('amount')
-    notes=json.get_data('notes')
-    customerRefId=json.get_data('customerRefId')
-    purpose=json.get_data('purpose')
-    transferType=json.get_data('transferType') 
+    payeeId= json_data.get('payeeId') 
+    bankAccountNumber=json_data.get('bankAccountNumber')
+    amount=json_data.get('amount')
+    notes = json_data.get('notes', {})
+    customerRefId=json_data.get('customerRefId')
+    purpose=json_data.get('purpose')
+    transferType=json_data.get('transferType') 
     transfer=Transfer(
-    payee_id=payee_id,
-    bank_account_number=bank_account_number,
+    payeeId=payeeId,
+    bankAccountNumber=bankAccountNumber,
     amount=amount,
-    customer_ref_id=customer_ref_id,
+    customerRefId=customerRefId,
     purpose=purpose,
-    transfer_type=transfer_type,
+    transferType=transferType,
     notes=notes)
     transfer.transfer()
                                     
